@@ -34,7 +34,7 @@ public class DziekanatREST implements DziekanatOceny{
 		//Student student = new Student();
 		
 		//dziekanatBean.entityManager.persist(student);
-		
+		int i = 0;
 		
 		return "hello";
 	}
