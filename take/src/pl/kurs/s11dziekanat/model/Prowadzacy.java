@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity(name="Prowadzacy")
 public class Prowadzacy {

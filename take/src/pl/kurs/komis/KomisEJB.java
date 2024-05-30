@@ -10,7 +10,7 @@ import javax.persistence.Query;
 @Stateless
 public class KomisEJB {
 	
-	@PersistenceContext(name="komis")
+	@PersistenceContext(name="prowadzacy")
 	EntityManager manager;
 
 	

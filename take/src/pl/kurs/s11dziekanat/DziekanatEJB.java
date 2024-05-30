@@ -1,5 +1,6 @@
 package pl.kurs.s11dziekanat;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,7 +11,7 @@ import pl.kurs.s11dziekanat.model.Przedmiot;
 @Stateless
 public class DziekanatEJB {
 	
-	@PersistenceContext(name="komis")
+	@PersistenceContext(name="dziekanat")
 	EntityManager entityManager;
 	
 

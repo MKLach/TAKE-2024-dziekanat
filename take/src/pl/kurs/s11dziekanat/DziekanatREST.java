@@ -31,11 +31,7 @@ public class DziekanatREST implements DziekanatOceny{
 	@Path("/test")
 	public String create(Ocena ocena) {
 		
-		//Student student = new Student();
-		
-		//dziekanatBean.entityManager.persist(student);
-		
-		
+	
 		return "hello";
 	}
 	

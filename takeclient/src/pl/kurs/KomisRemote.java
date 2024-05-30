@@ -15,6 +15,7 @@ public class KomisRemote implements Komis {
 		StringWriter sw = new StringWriter();
 		JAXB.marshal(car, sw);
 		HttpHelper.doPost(url,sw.toString(),"application/xml");
+		System.out.println(sw.toString());
 	}
 
 	@Override
@@ -37,6 +38,7 @@ public class KomisRemote implements Komis {
 		StringWriter sw = new StringWriter();
 		JAXB.marshal(car, sw);
 		HttpHelper.send("PUT",url,sw.toString(),"application/xml");
+		System.out.println(sw.toString());
 	}
 
 	@Override
