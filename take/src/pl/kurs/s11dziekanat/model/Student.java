@@ -32,7 +32,7 @@ public class Student {
 	private String nazwisko;
 	
 	@Column(name = "data_urodzenia")
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	private Date dataUrodzenia;
 
 	@OneToMany(mappedBy="student")

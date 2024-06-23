@@ -5,6 +5,7 @@
       <class>pl.kurs.s11dziekanat.model.Przedmiot</class>
       <properties>
           <property name="hibernate.hbm2ddl.auto" value="update"></property>
+          <property name="hibernate.jta.allowTransactionAccess" value="true" ></property>
       </properties>
    </persistence-unit>
  </persistence>

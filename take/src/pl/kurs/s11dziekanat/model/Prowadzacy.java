@@ -4,14 +4,17 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -34,14 +37,9 @@ public class Prowadzacy {
 	@Column(name = "tytul", length = 50)
 	private String tytul;
 
-	
-	@ManyToMany
-	@JoinTable(
-			name = "Prowadz¹cy_Przedmioty", 
-			joinColumns = @JoinColumn(name="prowadzacy_id", referencedColumnName = "prowadzacy_id"), 
-			inverseJoinColumns = @JoinColumn(name="przedmiot_id", referencedColumnName = "przedmiot_id"))
-	private Set<Przedmiot> przedmioty;
-	
+	@OneToMany(mappedBy = "prowadzacy", fetch=FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.DETACH})
+	private Set<ProwadzacyPrzedmiot> przedmioty;
+
 	public Prowadzacy(){
 		
 	}
@@ -86,27 +84,27 @@ public class Prowadzacy {
 		this.tytul = tytul;
 	}
 
-	public Set<Przedmiot> getPrzedmioty() {
+	public Set<ProwadzacyPrzedmiot> getPrzedmioty() {
 		return przedmioty;
 	}
 
-	public void setPrzedmioty(Set<Przedmiot> przedmioty) {
+	public void setPrzedmioty(Set<ProwadzacyPrzedmiot> przedmioty) {
 		this.przedmioty = przedmioty;
 	}
 	
-	public void addPrzedmioty(Przedmiot przedmiot) {
+	public void addPrzedmioty(ProwadzacyPrzedmiot przedmiot) {
 		if(this.przedmioty == null) {
-			this.przedmioty = new HashSet<Przedmiot>();
+			this.przedmioty = new HashSet<ProwadzacyPrzedmiot>();
 		}
 		
 		this.przedmioty.add(przedmiot);
-		przedmiot.addProwadzacy(this);
+		przedmiot.setProwadzacy(this);
 		
 	}
 	
 	public void removePrzedmioty(Przedmiot przedmioty) {
 		if(this.przedmioty == null) {
-			this.przedmioty = new HashSet<Przedmiot>();
+			this.przedmioty = new HashSet<ProwadzacyPrzedmiot>();
 			return;
 		}
 		

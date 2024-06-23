@@ -9,9 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -31,8 +28,8 @@ public class Przedmiot {
 	private String nazwa;
 	
 	
-	@ManyToMany(mappedBy = "przedmioty")
-	private Set<Prowadzacy> prowadzacy;
+	@OneToMany(mappedBy = "przedmiot")
+	private Set<ProwadzacyPrzedmiot> prowadzacy;
 
 	@OneToMany(mappedBy="przedmiot")
 	private Set<Ocena> oceny;
@@ -86,20 +83,20 @@ public class Przedmiot {
 		
 	}
 
-	public void addProwadzacy(Prowadzacy prowadzacy) {
+	public void addProwadzacy(ProwadzacyPrzedmiot prowadzacy) {
 		
 		if(this.prowadzacy == null) {
-			this.prowadzacy = new HashSet<Prowadzacy>();
+			this.prowadzacy = new HashSet<ProwadzacyPrzedmiot>();
 		}
 		
 		this.prowadzacy.add(prowadzacy);
 		
 	}
 	
-	public void removeProwadzacy(Prowadzacy prowadzacy) {
+	public void removeProwadzacy(ProwadzacyPrzedmiot prowadzacy) {
 		
 		if(this.prowadzacy == null) {
-			this.prowadzacy = new HashSet<Prowadzacy>();
+			this.prowadzacy = new HashSet<ProwadzacyPrzedmiot>();
 			return;
 		}
 		
@@ -107,11 +104,11 @@ public class Przedmiot {
 		
 	}
 
-	public void setProwadzacy(Set<Prowadzacy> prowadzacy) {
+	public void setProwadzacy(Set<ProwadzacyPrzedmiot> prowadzacy) {
 		this.prowadzacy = prowadzacy;
 	}
 
-	public Set<Prowadzacy> getProwadzacy(){
+	public Set<ProwadzacyPrzedmiot> getProwadzacy(){
 		
 		return prowadzacy;
 	}

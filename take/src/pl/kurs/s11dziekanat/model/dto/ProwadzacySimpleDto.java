@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,62 +16,27 @@ import pl.kurs.s11dziekanat.model.Prowadzacy;
 import pl.kurs.s11dziekanat.model.ProwadzacyPrzedmiot;
 
 @XmlRootElement(name = "prowadzacy")
-public class ProwadzacyDto {
+public class ProwadzacySimpleDto {
 
     private Long id;
     private String imie;
     private String nazwisko;
     private String tytul;
-    private List<ProwadzacyPrzedmiotDto> przedmioty;
 
-    public ProwadzacyDto() {
+    public ProwadzacySimpleDto() {
 		
 	}
     
-    public ProwadzacyDto(Prowadzacy p) {
+    public ProwadzacySimpleDto(Prowadzacy p) {
     	this.id = p.getId();
     	this.imie = p.getImie();
     	this.nazwisko = p.getNazwisko();
     	this.tytul = p.getTytul();
     	
-    	Stream<ProwadzacyPrzedmiotDto> stream = p.getPrzedmioty().stream().map(new Function<ProwadzacyPrzedmiot, ProwadzacyPrzedmiotDto>() {
-
-			@Override
-			public ProwadzacyPrzedmiotDto apply(ProwadzacyPrzedmiot t) {
-				
-				return new ProwadzacyPrzedmiotDto(t);
-			}
-		});
-    	
-    	przedmioty = new ArrayList<ProwadzacyPrzedmiotDto>();
-    	
-    	stream.forEach(new Consumer<Object>() {
-
-			@Override
-			public void accept(Object t) {
-				
-				ProwadzacyPrzedmiotDto dto = (ProwadzacyPrzedmiotDto) t;
-				
-				przedmioty.add(dto);
-				
-			}
-		});
-    	
-    	
-    	
     }
     
-    
-
-    public ProwadzacyDto(Long id, String imie, String nazwisko, String tytul, List<ProwadzacyPrzedmiotDto> przedmioty) {
-        this.id = id;
-        this.imie = imie;
-        this.nazwisko = nazwisko;
-        this.tytul = tytul;
-        this.przedmioty = przedmioty;
-    }
-
-    public ProwadzacyDto(Long id, String imie, String nazwisko, String tytul) {
+   
+    public ProwadzacySimpleDto(Long id, String imie, String nazwisko, String tytul) {
         this.id = id;
         this.imie = imie;
         this.nazwisko = nazwisko;
@@ -79,7 +45,7 @@ public class ProwadzacyDto {
     }
 
     
-    @XmlElement
+    @XmlAttribute
     public Long getId() {
         return id;
     }
@@ -88,7 +54,7 @@ public class ProwadzacyDto {
         this.id = id;
     }
 
-    @XmlElement
+    @XmlAttribute
     public String getImie() {
         return imie;
     }
@@ -97,7 +63,7 @@ public class ProwadzacyDto {
         this.imie = imie;
     }
 
-    @XmlElement
+    @XmlAttribute
     public String getNazwisko() {
         return nazwisko;
     }
@@ -106,7 +72,7 @@ public class ProwadzacyDto {
         this.nazwisko = nazwisko;
     }
 
-    @XmlElement
+    @XmlAttribute
     public String getTytul() {
         return tytul;
     }
@@ -115,19 +81,10 @@ public class ProwadzacyDto {
         this.tytul = tytul;
     }
 
-    @XmlElementWrapper(name = "przedmioty")
-    @XmlElement(name = "przedmiot")
-    public List<ProwadzacyPrzedmiotDto> getPrzedmioty() {
-        return przedmioty;
-    }
-
-    public void setPrzedmioty(List<ProwadzacyPrzedmiotDto> przedmioty) {
-        this.przedmioty = przedmioty;
-    }
-
+  
     @Override
     public String toString() {
         return "ProwadzacyDTO [id=" + id + ", imie=" + imie + ", nazwisko=" + nazwisko + ", tytul=" + tytul
-                + ", przedmioty=" + przedmioty + "]";
+                + "]";
     }
 }

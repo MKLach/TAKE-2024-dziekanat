@@ -6,17 +6,16 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ListDto {
+public class Przedmioty {
 	private List<PrzedmiotDto> przedmioty = new ArrayList<PrzedmiotDto>();
 
-	public ListDto(List<PrzedmiotDto> values) {
+	public Przedmioty(List<PrzedmiotDto> values) {
 		super();
 		this.przedmioty = new ArrayList<PrzedmiotDto>(values);
-		System.out.println(values.size());
 		
 	}
 
-	public ListDto() {	}
+	public Przedmioty() {	}
 	
 	public List<PrzedmiotDto> getValues() {
 		return przedmioty;

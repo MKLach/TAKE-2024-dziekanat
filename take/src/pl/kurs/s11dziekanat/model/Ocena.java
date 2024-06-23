@@ -41,7 +41,7 @@ public class Ocena {
 	private Prowadzacy prowadzacy;
 	
 	@ManyToOne
-	@JoinColumn(name="przedmiot_id")
+	@JoinColumn(name="prowadzacy_przedmiot_id")
 	private Przedmiot przedmiot;
 	
 	
