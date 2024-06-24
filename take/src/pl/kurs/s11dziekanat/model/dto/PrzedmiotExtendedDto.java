@@ -26,6 +26,7 @@ public class PrzedmiotExtendedDto extends PrzedmiotDto {
 	private List<ProwadzacySimpleDto> prowadzacy;
 	private Semestr semestr;
 	
+	
 	public PrzedmiotExtendedDto() {
 		super();
 	}
@@ -76,6 +77,10 @@ public class PrzedmiotExtendedDto extends PrzedmiotDto {
 		this.semestr = semestr;
 	}
 	
-    
+	@XmlElement
+	public Integer getLcizbaProwadzacych() {
+		return prowadzacy.size();
+	}
+
 	
 }

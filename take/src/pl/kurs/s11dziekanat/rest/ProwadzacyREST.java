@@ -110,7 +110,7 @@ public class ProwadzacyREST{
 
 
 	public Response delete(Prowadzacy p) {
-		
+	
 		return Response.noContent().build();
 	}
 
@@ -182,15 +182,30 @@ public class ProwadzacyREST{
 			Prowadzacy p1 = prowadaczyService.updateAddNewPrzedmiot(id, pp);
 			return Response.ok(new ProwadzacyDto(p1)).build();
 			
-			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
 			return Response.notModified(e.getMessage()).build();
 		}
 		
+	}
+	
+	@DELETE
+	@Path("/{id}/removePrzedmiot")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response removePrzedmiot(@PathParam(value="id") long id, ProwadzacyPrzedmiotDto przedmiot ) {
 		
-		
+		try {
+			Prowadzacy p1 = prowadaczyService.removeProwadzacyPrzedmiot(id, przedmiot);
+			
+			return Response.noContent().build();
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			return Response.notModified(e.getMessage()).build();
+		}
 		
 	}
 	

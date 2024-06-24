@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ public class Student {
 	@Temporal(TemporalType.DATE)
 	private Date dataUrodzenia;
 
-	@OneToMany(mappedBy="student")
+	@OneToMany(mappedBy="student", cascade={CascadeType.REMOVE})
 	private Set<Ocena> oceny;
 	
 	public Student() {

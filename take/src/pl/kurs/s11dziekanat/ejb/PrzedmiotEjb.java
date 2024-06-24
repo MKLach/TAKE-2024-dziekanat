@@ -20,6 +20,7 @@ import pl.kurs.s11dziekanat.model.dto.ProwadzacyDto;
 import pl.kurs.s11dziekanat.model.dto.ProwadzacySimpleDto;
 import pl.kurs.s11dziekanat.model.dto.PrzedmiotDto;
 import pl.kurs.s11dziekanat.model.dto.PrzedmiotExtendedDto;
+import pl.kurs.s11dziekanat.model.dto.PrzedmiotRSDto;
 import pl.kurs.s11dziekanat.utils.QuickCast;
 
 @Stateless
@@ -210,6 +211,24 @@ public class PrzedmiotEjb {
 		
 	}
 	
+	public PrzedmiotRSDto getAllYearsForPrzedmiot(Long p) throws PrzedmiotExcetion{
+		
+		return getAllYearsForPrzedmiot(find(p).orElseThrow(new PrzedmiotExcetion.Supply("could not find przedmiot with given id")));
+		
+	}
+	
+	public PrzedmiotRSDto getAllYearsForPrzedmiot(String p) throws PrzedmiotExcetion{
+		
+		return getAllYearsForPrzedmiot(findOpt(p).orElseThrow(new PrzedmiotExcetion.Supply("could not find przedmiot with given name")));
+		
+	}
+	
+	public PrzedmiotRSDto getAllYearsForPrzedmiot(Przedmiot p){
+		
+		return new PrzedmiotRSDto(p);
+		
+	}
+	
 	
 	public List<PrzedmiotDto> cast(List<Przedmiot> przedmiots){
 		
@@ -219,6 +238,46 @@ public class PrzedmiotEjb {
 			l.add(new PrzedmiotDto((Przedmiot)o));
 		}
 		return l;
+		
+	}
+	
+	public Optional<ProwadzacyPrzedmiot> findPPByIdOpt(Long id) {
+		
+		Optional<ProwadzacyPrzedmiot> opt = Optional.ofNullable(entityManager.find(ProwadzacyPrzedmiot.class, id));
+		
+		return opt;
+		
+	}
+	
+	public ProwadzacyPrzedmiot findPPById(Long id) throws PrzedmiotExcetion{
+		
+		return findPPByIdOpt(id).orElseThrow(new PrzedmiotExcetion.Supply("pp not found"));
+		
+	}
+	
+	public List<ProwadzacyPrzedmiot> findAllPP() {
+		
+		TypedQuery<ProwadzacyPrzedmiot> query = entityManager.createQuery("SELECT p FROM ProwadzacyPrzedmiot p", ProwadzacyPrzedmiot.class);
+		
+		return query.getResultList();
+		
+	}
+	
+	public ProwadzacyPrzedmiot findPP(String nazwa, Integer rok, Semestr semestr ) throws PrzedmiotExcetion{
+		
+		String jpql = "SELECT p FROM ProwadzacyPrzedmiot p WHERE p.nazwa = :nazwa AND p.rok = :rok AND p.semestr = :semestr";
+        TypedQuery<ProwadzacyPrzedmiot> query = entityManager.createQuery(jpql, ProwadzacyPrzedmiot.class);
+
+        // Set the query parameters
+        query.setParameter("nazwa", nazwa);
+        query.setParameter("rok", rok);
+        query.setParameter("semestr", semestr);
+
+        // Execute the query and handle the result
+        if (query.getResultList().isEmpty()) {
+            throw new PrzedmiotExcetion("pp not found");
+        }
+        return query.getResultList().get(0);
 		
 	}
 	

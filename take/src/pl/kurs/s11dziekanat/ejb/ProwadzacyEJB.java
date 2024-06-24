@@ -464,7 +464,7 @@ public class ProwadzacyEJB {
 		System.out.println(id);
 		entityManager.remove(find(id).get());
 		try{
-			return delete(find(id).orElseThrow(new ProwadzacyException.Supply("Could not find przedmiot with id " + id )));
+			return delete(find(id).orElseThrow(new ProwadzacyException.Supply("Could not find prowadzacy with id " + id )));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -474,6 +474,13 @@ public class ProwadzacyEJB {
 	public boolean delete(Prowadzacy p) throws Exception {
 		
 		try{
+			for(ProwadzacyPrzedmiot pp : p.getPrzedmioty()){
+				
+				entityManager.remove(pp);
+				
+			}
+			
+			
 			entityManager.remove(p);
 			
 		} catch (Exception e) {
@@ -619,6 +626,53 @@ public class ProwadzacyEJB {
 		TypedQuery<ProwadzacyPrzedmiot> query = entityManager.createQuery("SELECT p FROM Prowadzacy_Przedmioty p", ProwadzacyPrzedmiot.class);
 		
 		return query.getResultList();
+	}
+
+	public Prowadzacy removeProwadzacyPrzedmiot(long id, final ProwadzacyPrzedmiotDto przedmiot) throws ProwadzacyException {
+		
+		Prowadzacy p = find(id).orElseThrow(new ProwadzacyException.Supply("could not find prowadzacy with given id!"));
+		boolean result = false;
+		if(przedmiot.getId() != null){
+			
+			result = p.getPrzedmioty().removeIf(new Predicate<ProwadzacyPrzedmiot>() {
+
+				@Override
+				public boolean test(ProwadzacyPrzedmiot t) {
+					
+					if( t.getProwadzacyPrzedmiotId().equals(przedmiot.getProwadzacy_przedmiot_id()) ){
+						entityManager.remove(t);
+						return true;
+						
+					}
+					return false;
+				}
+			});
+		
+			
+		} else if(przedmiot.getNazwa() != null && przedmiot.getRok() > 0 && przedmiot.getSemestr() != null){
+			result = p.getPrzedmioty().removeIf(new Predicate<ProwadzacyPrzedmiot>() {
+
+				@Override
+				public boolean test(ProwadzacyPrzedmiot t) {
+					
+					if(t.getPrzedmiot().getNazwa().equals(przedmiot.getNazwa()) && t.getSemestr().equals(Semestr.get(przedmiot.getSemestr())) && ProwadzacyPrzedmiot.getYearFromDate(t.getRok()).equals(przedmiot.getRok())){
+						entityManager.remove(t);
+						return true;
+						
+					}
+					
+					return false;
+				}
+			});
+		}
+		
+		if(!result){
+			throw new ProwadzacyException("could not find przedmiot to remove with given data!");
+		}
+		
+		entityManager.merge(p);
+		
+		return p;
 	}
 	
 	

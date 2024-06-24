@@ -15,58 +15,42 @@ import pl.kurs.s11dziekanat.model.Prowadzacy;
 import pl.kurs.s11dziekanat.model.ProwadzacyPrzedmiot;
 
 @XmlRootElement(name = "prowadzacy")
-public class ProwadzacyDto {
+public class ProwadzacyBasicDto {
 
     private Long id;
     private String imie;
     private String nazwisko;
     private String tytul;
-    private List<ProwadzacyPrzedmiotDto> przedmioty;
-
-    public ProwadzacyDto() {
+    
+    public ProwadzacyBasicDto() {
 		
 	}
     
-    public ProwadzacyDto(Prowadzacy p) {
+    public ProwadzacyBasicDto(Prowadzacy p) {
     	this.id = p.getId();
     	this.imie = p.getImie();
     	this.nazwisko = p.getNazwisko();
     	this.tytul = p.getTytul();
-    	
-    	Stream<ProwadzacyPrzedmiotDto> stream = p.getPrzedmioty().stream().map(new Function<ProwadzacyPrzedmiot, ProwadzacyPrzedmiotDto>() {
-
-			@Override
-			public ProwadzacyPrzedmiotDto apply(ProwadzacyPrzedmiot t) {
-				
-				return new ProwadzacyPrzedmiotDto(t);
-			}
-		});
-    	
-    	przedmioty = new ArrayList<ProwadzacyPrzedmiotDto>();
-    	
-    	stream.forEach(new Consumer<Object>() {
-
-			@Override
-			public void accept(Object t) {
-				
-				ProwadzacyPrzedmiotDto dto = (ProwadzacyPrzedmiotDto) t;
-				
-				przedmioty.add(dto);
-				
-			}
-		});
-    	
     }
     
-    @XmlElementWrapper(name = "przedmioty")
-    @XmlElement(name = "przedmiot")
-    public List<ProwadzacyPrzedmiotDto> getPrzedmioty() {
-        return przedmioty;
+    
+
+    public ProwadzacyBasicDto(Long id, String imie, String nazwisko, String tytul, List<ProwadzacyPrzedmiotDto> przedmioty) {
+        this.id = id;
+        this.imie = imie;
+        this.nazwisko = nazwisko;
+        this.tytul = tytul;
+        
     }
 
-    public void setPrzedmioty(List<ProwadzacyPrzedmiotDto> przedmioty) {
-        this.przedmioty = przedmioty;
+    public ProwadzacyBasicDto(Long id, String imie, String nazwisko, String tytul) {
+        this.id = id;
+        this.imie = imie;
+        this.nazwisko = nazwisko;
+        this.tytul = tytul;
+       
     }
+
     
     @XmlElement
     public Long getId() {
@@ -104,5 +88,10 @@ public class ProwadzacyDto {
         this.tytul = tytul;
     }
 
-  
+    
+    @Override
+    public String toString() {
+        return "ProwadzacyDTO [id=" + id + ", imie=" + imie + ", nazwisko=" + nazwisko + ", tytul=" + tytul
+                + "]";
+    }
 }

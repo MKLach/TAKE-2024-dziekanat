@@ -1,17 +1,12 @@
 package pl.kurs.s11dziekanat.model.dto.student;
 
 import java.util.Date;
-import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import pl.kurs.s11dziekanat.model.Ocena;
+import pl.kurs.s11dziekanat.model.DateAdapter;
 import pl.kurs.s11dziekanat.model.Student;
 
 @XmlRootElement(name = "student")
@@ -66,6 +61,7 @@ public class StudentDto {
 	}
 	
 	@XmlElement
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	public Date getDataUrodzenia() {
 		return dataUrodzenia;
 	}

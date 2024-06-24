@@ -29,6 +29,9 @@ public class Ocena {
 	@Column(name="ocena")
 	private double ocena;
 	
+	@Column(name="waga")
+	private double waga;
+	
 	@Column(name="komentarz", length = 350)
 	private String komentarz;
 	
@@ -36,13 +39,13 @@ public class Ocena {
 	@JoinColumn(name="student_id")
 	private Student student;
 	
-	@ManyToOne
-	@JoinColumn(name="prowadzacy_id")
-	private Prowadzacy prowadzacy;
+	//@ManyToOne
+	//@JoinColumn(name="prowadzacy_id", nullable=true)
+	//private Prowadzacy prowadzacy;
 	
 	@ManyToOne
 	@JoinColumn(name="prowadzacy_przedmiot_id")
-	private Przedmiot przedmiot;
+	private ProwadzacyPrzedmiot przedmiot;
 	
 	
 	@Column(name = "data_wystawienia")
@@ -53,10 +56,20 @@ public class Ocena {
 		
 	}
 
-	public Ocena(Long id, double ocena, String komentarz, Date dataWystawienia) {
+	public Ocena(Long id, double ocena, double waga, String komentarz, Date dataWystawienia) {
 		super();
 		this.id = id;
 		this.ocena = ocena;
+		this.waga = waga;
+		this.komentarz = komentarz;
+		this.dataWystawienia = dataWystawienia;
+	}
+	
+	public Ocena(double ocena, double waga, String komentarz, Date dataWystawienia) {
+		super();
+		
+		this.ocena = ocena;
+		this.waga = waga;
 		this.komentarz = komentarz;
 		this.dataWystawienia = dataWystawienia;
 	}
@@ -93,19 +106,19 @@ public class Ocena {
 		this.student = student;
 	}
 
-	public Prowadzacy getProwadzacy() {
-		return prowadzacy;
-	}
+	//public Prowadzacy getProwadzacy() {
+	//	return prowadzacy;
+	//}
 
-	public void setProwadzacy(Prowadzacy prowadzacy) {
-		this.prowadzacy = prowadzacy;
-	}
+	//public void setProwadzacy(Prowadzacy prowadzacy) {
+	//	this.prowadzacy = prowadzacy;
+	//}
 
-	public Przedmiot getPrzedmiot() {
+	public ProwadzacyPrzedmiot getPrzedmiot() {
 		return przedmiot;
 	}
 
-	public void setPrzedmiot(Przedmiot przedmiot) {
+	public void setPrzedmiot(ProwadzacyPrzedmiot przedmiot) {
 		this.przedmiot = przedmiot;
 	}
 
@@ -121,6 +134,16 @@ public class Ocena {
 		this.dataWystawienia = dataWystawienia;
 	}
 	
+	
+	
+	public double getWaga() {
+		return waga;
+	}
+
+	public void setWaga(double waga) {
+		this.waga = waga;
+	}
+
 	@PrePersist	
 	public void prePersist(){
 		if(this.dataWystawienia == null){
@@ -137,8 +160,9 @@ public class Ocena {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, komentarz, ocena, prowadzacy, przedmiot, student);
+		return Objects.hash(id, komentarz, ocena, przedmiot, student);
 	}
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -151,16 +175,8 @@ public class Ocena {
 		Ocena other = (Ocena) obj;
 		return Objects.equals(id, other.id) && Objects.equals(komentarz, other.komentarz)
 				&& Double.doubleToLongBits(ocena) == Double.doubleToLongBits(other.ocena)
-				&& Objects.equals(prowadzacy, other.prowadzacy) && Objects.equals(przedmiot, other.przedmiot)
+				//&& Objects.equals(prowadzacy, other.prowadzacy) && Objects.equals(przedmiot, other.przedmiot)
 				&& Objects.equals(student, other.student);
 	}
 
-	@Override
-	public String toString() {
-		return "Ocena [id=" + id + ", ocena=" + ocena + ", komentarz=" + komentarz + ", student=" + student.getNazwisko()
-				+ ", prowadzacy=" + prowadzacy + ", przedmiot=" + przedmiot + "]";
-	}
-	
-	
-	
 }

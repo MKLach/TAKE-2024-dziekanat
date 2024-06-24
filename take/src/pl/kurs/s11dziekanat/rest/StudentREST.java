@@ -1,14 +1,11 @@
 package pl.kurs.s11dziekanat.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 import javax.ejb.EJB;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,12 +16,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import pl.kurs.s11dziekanat.ejb.ProwadzacyEJB;
+import extended.javax.ws.rs.PATCH;
 import pl.kurs.s11dziekanat.ejb.StudentEjb;
-import pl.kurs.s11dziekanat.model.Prowadzacy;
+import pl.kurs.s11dziekanat.exception.PrzedmiotExcetion;
+import pl.kurs.s11dziekanat.exception.StudentExcetion;
+import pl.kurs.s11dziekanat.model.Semestr;
 import pl.kurs.s11dziekanat.model.Student;
 import pl.kurs.s11dziekanat.model.dto.ProwadzacyDto;
+import pl.kurs.s11dziekanat.model.dto.student.Studenci;
 import pl.kurs.s11dziekanat.model.dto.student.StudentDto;
+import pl.kurs.s11dziekanat.model.dto.student.StudentExtendedDto;
+import pl.kurs.s11dziekanat.model.dto.student.ZapisNaPrzedmiot;
 import pl.kurs.s11dziekanat.utils.QuickCast;
 
 @Path("/dziekanat/studenci")
@@ -42,11 +44,12 @@ public class StudentREST{
 			return new StudentDto(t);
 		}
 	};
-	
+
 
 	@EJB
 	StudentEjb studentService;
 
+	
 	@GET
 	@Path("")
 	@Consumes({ "application/xml" })
@@ -58,8 +61,47 @@ public class StudentREST{
       
 		QuickCast<List, List, Student, StudentDto> qc = new QuickCast<List, List, Student, StudentDto>(__F__);
 		
-		List<ProwadzacyDto> m = qc.castUsingAdv(studentService.findAllWildCardSupport(imie, nazwisko), new ArrayList<ProwadzacyDto>());
-        return Response.ok(new pl.kurs.s11dziekanat.model.dto.Prowadzacy(m)).build();
+		List<StudentDto> m = qc.castUsingAdv(studentService.findAllWildCardSupport(imie, nazwisko), new ArrayList<StudentDto>());
+        
+		return Response.ok(new Studenci(m)).build();
+		
+	
+	}
+	
+	@GET
+	@Path("/zapisaniNa")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response findAllByPrzedmiot(
+			@QueryParam("nazwa") String nazwa,
+            @QueryParam("rok") Integer rok,
+            @QueryParam("semestr") String semestr) {
+
+		if(nazwa == null){
+			return Response.status(400).build();
+			
+		}
+
+		if(rok == null){
+			return Response.status(400).build();
+			
+		}
+		
+		if(semestr == null){
+			return Response.status(400).build();
+			
+		}
+		
+		if(Semestr.get(semestr) == null){
+			return Response.status(400).build();
+			
+		}
+      
+		QuickCast<List, List, Student, StudentDto> qc = new QuickCast<List, List, Student, StudentDto>(__F__);
+		
+		List<StudentDto> m = qc.castUsingAdv(studentService.findAllByPrzedmiot(nazwa, rok, Semestr.get(semestr)), new ArrayList<StudentDto>());
+        
+		return Response.ok(new Studenci(m)).build();
 		
 	
 	}
@@ -80,22 +122,11 @@ public class StudentREST{
 			e.printStackTrace();
 			return Response.notModified(e.getMessage()).build();
 			
-		}
+		} 
 		
 	}
 
 
-	public Response delete(Prowadzacy p) {
-		
-		return Response.noContent().build();
-	}
-
-
-	public Response delete(Long id) {
-		
-		return Response.noContent().build();
-	}
-	
 	
 	@DELETE
 	@Path("/{id}")
@@ -111,7 +142,6 @@ public class StudentREST{
 			e.printStackTrace();
 			return Response.notModified("unable to remove! " + e.getMessage()).build();
 		}
-		
 		
 	}
 
@@ -134,11 +164,79 @@ public class StudentREST{
 	}
 	 
 	
-
-	public Response update(StudentDto p) {
+	@GET
+	@Path("/{id}/przedmioty")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response findByIdExt(@PathParam(value="id") long id) {
 		
-		return null;
+		StudentExtendedDto opt;
+		try {
+			opt = studentService.findExt(Long.valueOf(id));
+		} catch (StudentExcetion e) {
+			
+			return Response.status(404).tag(e.getMessage()).build();
+		}
+		
+		return Response.ok(opt).build();
+		
 	}
+	 
+	
+	@PATCH
+	@Path("/{id}")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response update(@PathParam("id") Long id, StudentDto p)  {
+		try{
+			Student s = studentService.update(id, p);
+			
+			return Response.ok(new StudentDto(s)).build();
+			
+		}catch (PrzedmiotExcetion e) {
+			return Response.notModified().tag(e.getMessage()).build();
+		}
+	}
+	
+	
+	
+	@PATCH
+	@Path("/{id}/zapisz")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response zapiszNaPrzedmiot(@PathParam("id") Long id, ZapisNaPrzedmiot p)  {
+		System.out.println(id);
+		try{
+			Student s = studentService.zapiszNaPrzedmiot(id, p);
+			
+			return Response.ok(new StudentDto(s)).build();
+			
+		}catch (StudentExcetion e) {
+			
+			return Response.notModified().tag(e.getMessage()).build();
+		} catch (PrzedmiotExcetion e) {
+			return Response.notModified().tag(e.getMessage()).build();
+		}
+	}
+	
+	@DELETE
+	@Path("/{id}/wypisz")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response wypiszZPrzedmiotu(@PathParam("id") Long id, ZapisNaPrzedmiot p)  {
+		System.out.println(id);
+		try{
+			Student s = studentService.wypiszZPrzedmiotu(id, p);
+			
+			return Response.ok(new StudentDto(s)).build();
+			
+		}catch (StudentExcetion e) {
+			
+			return Response.notModified().tag(e.getMessage()).build();
+		}
+	}
+	
+	
 	
 	
 	

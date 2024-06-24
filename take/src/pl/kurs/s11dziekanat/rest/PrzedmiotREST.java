@@ -137,9 +137,19 @@ public class PrzedmiotREST{
 		
 		final Semestr s;
 		try {
-			if((s=Semestr.get(semestr)) == null){
-				throw new InvalidArgExcetion("zla wartosc dal semestru: " + semestr);
+			if(semestr == null){
+				throw new InvalidArgExcetion("null semestr");
 			}
+			if((s=Semestr.get(semestr)) == null){
+				throw new InvalidArgExcetion("zla wartosc dla semestru: " + semestr);
+			}
+			if(rok == null){
+				throw new InvalidArgExcetion("null rok");
+			}
+			if(nazwa == null){
+				throw new InvalidArgExcetion("null nazwa");
+			}
+			
 			
 			return Response.ok(przedmiotyService.findExtended(nazwa, rok, s)).build();
 			
@@ -152,6 +162,8 @@ public class PrzedmiotREST{
 	}
 	
 	
+	
+	
 	@GET
 	@Path("")
 	@Consumes({ "application/xml" })
@@ -162,6 +174,39 @@ public class PrzedmiotREST{
 		List<Przedmiot> l = przedmiotyService.findAll();
 		System.out.println(l.size());
 		return Response.ok(new Przedmioty(przedmiotyService.cast(l))).build();
+	}
+	
+	@GET
+	@Path("/years")
+	@Consumes({ "application/xml" })
+	@Produces({ "application/xml" })
+	public Response findAllYearsForPrzedmiot(@QueryParam("id")Long id, @QueryParam("nazwa") String name) {
+		try {
+			
+			if(id != null && name != null){
+				return Response.status(400).tag("use only one, not both!").build();
+
+			}
+			
+			if(id != null){
+				
+				return Response.ok(przedmiotyService.getAllYearsForPrzedmiot(id)).build();
+				
+			}
+			
+			if(name != null){
+				return Response.ok(przedmiotyService.getAllYearsForPrzedmiot(name)).build();
+				
+			}
+
+			return Response.status(400).tag("could not find nazwa and id in url!").build();
+
+		} catch (PrzedmiotExcetion e) {
+			return Response.status(404).tag(e.getMessage()).build();
+		}
+		
+	
+		
 	}
 	
 	
